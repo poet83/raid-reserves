@@ -1,0 +1,619 @@
+{
+  "ZulGurub": {
+  "id": "ZulGurub",
+  "name": "Zul'Gurub",
+  "expansion": "Classic",
+  "bosses": [
+    {
+      "name": "High Priestess Jeklik",
+      "items": [
+        { "name": "Animist's Spaulders" },
+        { "name": "Jeklik's Crusher" },
+        { "name": "Jeklik's Opaline Talisman" },
+        { "name": "Peacekeeper Boots" },
+        { "name": "Primalist's Band" },
+        { "name": "Seafury Boots" },
+        { "name": "Zulian Defender" },
+        { "name": "Band of Servitude" },
+        { "name": "Belt of Untapped Power" },
+        { "name": "Blooddrenched Mask" },
+        { "name": "Cloak of the Hakkari Worshippers" },
+        { "name": "Gloves of the Tormented" },
+        { "name": "Might of the Tribe" },
+        { "name": "Sacrificial Gauntlets" },
+        { "name": "Seal of the Gurubashi Berserker" },
+        { "name": "Zulian Headdress" },
+        { "name": "Zulian Scepter of Rites" }
+      ]
+    },
+    {
+      "name": "High Priest Venoxis",
+      "items": [
+        { "name": "Blooddrenched Footpads" },
+        { "name": "Fang of Venoxis" },
+        { "name": "Runed Bloodstained Hauberk" },
+        { "name": "Zanzil's Band" },
+        { "name": "Zulian Stone Axe" },
+        { "name": "Zulian Tigerhide Cloak" },
+        { "name": "Band of Servitude" },
+        { "name": "Belt of Untapped Power" },
+        { "name": "Blooddrenched Mask" },
+        { "name": "Cloak of the Hakkari Worshippers" },
+        { "name": "Gloves of the Tormented" },
+        { "name": "Might of the Tribe" },
+        { "name": "Sacrificial Gauntlets" },
+        { "name": "Seal of the Gurubashi Berserker" },
+        { "name": "Zulian Headdress" }
+      ]
+    },
+    {
+      "name": "High Priestess Mar'li",
+      "items": [
+        { "name": "Band of Jin" },
+        { "name": "Bloodstained Greaves" },
+        { "name": "Flowing Ritual Robes" },
+        { "name": "Mar'li's Eye" },
+        { "name": "Mar'li's Touch" },
+        { "name": "Talisman of Protection" },
+        { "name": "Band of Servitude" },
+        { "name": "Belt of Untapped Power" },
+        { "name": "Blooddrenched Mask" },
+        { "name": "Cloak of the Hakkari Worshippers" },
+        { "name": "Gloves of the Tormented" },
+        { "name": "Might of the Tribe" },
+        { "name": "Sacrificial Gauntlets" },
+        { "name": "Seal of the Gurubashi Berserker" },
+        { "name": "Zulian Headdress" }
+      ]
+    },
+    {
+      "name": "Bloodlord Mandokir",
+      "items": [
+        { "name": "Bloodlord's Defender" },
+        { "name": "Halberd of Smiting" },
+        { "name": "Mandokir's Sting" },
+        { "name": "Warblade of the Hakkari" },
+        { "name": "Animist's Leggings" },
+        { "name": "Blooddrenched Grips" },
+        { "name": "Bloodsoaked Pauldrons" },
+        { "name": "Bloodtinged Kilt" },
+        { "name": "Hakkari Loa Cloak" },
+        { "name": "Overlord's Crimson Band" },
+        { "name": "Primalist's Seal" },
+        { "name": "Zanzil's Seal" },
+        { "name": "Swift Razzashi Raptor" }
+      ]
+    },
+    {
+      "name": "Edge of Madness",
+      "items": [
+        { "name": "Gri'lek's Grinder" },
+        { "name": "Gri'lek's Carver" },
+        { "name": "Fiery Retributer" },
+        { "name": "Thoughtblighter" },
+        { "name": "Renataki's Soul Conduit" },
+        { "name": "Pitchfork of Madness" },
+        { "name": "Wushoolay's Poker" },
+        { "name": "Hoodoo Hunting Bow" }
+      ]
+    },
+    {
+      "name": "Gahz'ranka",
+      "items": [
+        { "name": "Foror's Eyepatch" },
+        { "name": "Nat Pagle's Fish Terminator" },
+        { "name": "Nat Pagle's Broken Reel" },
+        { "name": "Tigule's Harpoon" },
+        { "name": "Tome of Polymorph: Turtle" }
+      ]
+    },
+    {
+      "name": "High Priest Thekal",
+      "items": [
+        { "name": "Betrayer's Boots" },
+        { "name": "Peacekeeper Leggings" },
+        { "name": "Ritualistic Legguards" },
+        { "name": "Seafury Leggings" },
+        { "name": "Seal of Jin" },
+        { "name": "Thekal's Grasp" },
+        { "name": "Zulian Slicer" },
+        { "name": "Band of Servitude" },
+        { "name": "Belt of Untapped Power" },
+        { "name": "Blooddrenched Mask" },
+        { "name": "Cloak of the Hakkari Worshippers" },
+        { "name": "Gloves of the Tormented" },
+        { "name": "Might of the Tribe" },
+        { "name": "Sacrificial Gauntlets" },
+        { "name": "Seal of the Gurubashi Berserker" },
+        { "name": "Swift Zulian Tiger" }
+      ]
+    },
+    {
+      "name": "High Priestess Arlokk",
+      "items": [
+        { "name": "Arlokk's Grasp" },
+        { "name": "Arlokk's Hoodoo Stick" },
+        { "name": "Bloodsoaked Greaves" },
+        { "name": "Overlord's Onyx Band" },
+        { "name": "Will of Arlokk" },
+        { "name": "Band of Servitude" },
+        { "name": "Belt of Untapped Power" },
+        { "name": "Blooddrenched Mask" },
+        { "name": "Cloak of the Hakkari Worshippers" },
+        { "name": "Gloves of the Tormented" },
+        { "name": "Might of the Tribe" },
+        { "name": "Sacrificial Gauntlets" },
+        { "name": "Seal of the Gurubashi Berserker" },
+        { "name": "Zulian Headdress" },
+        { "name": "Zulian Scepter of Rites" }
+      ]
+    },
+    {
+      "name": "Jin'do the Hexxer",
+      "items": [
+        { "name": "Jin'do's Bag of Whammies" },
+        { "name": "Jin'do's Evil Eye" },
+        { "name": "Jin'do's Hexxer" },
+        { "name": "Jin'do's Judgement" },
+        { "name": "Animist's Boots" },
+        { "name": "Blooddrenched Leggings" },
+        { "name": "Bloodsoaked Gauntlets" },
+        { "name": "Bloodstained Coif" },
+        { "name": "Bloodstained Legplates" },
+        { "name": "Bloodtinged Gloves" },
+        { "name": "Overlord's Embrace" },
+        { "name": "The Hexxer's Cover" }
+      ]
+    },
+    {
+      "name": "Hakkar",
+      "items": [
+        { "name": "Bloodsoaked Legplates" },
+        { "name": "Cloak of Consumption" },
+        { "name": "Peacekeeper Gauntlets" },
+        { "name": "Seafury Gauntlets" },
+        { "name": "Soul Corrupter's Necklace" },
+        { "name": "The Eye of Hakkar" },
+        { "name": "Aegis of the Blood God" },
+        { "name": "Ancient Hakkari Manslayer" },
+        { "name": "Bloodcaller" },
+        { "name": "Fang of the Faceless" },
+        { "name": "Gurubashi Dwarf Destroyer" },
+        { "name": "Touch of Chaos" },
+        { "name": "Warblade of the Hakkari" },
+        { "name": "Zin'rokh, Destroyer of Worlds" },
+        { "name": "Heart of Hakkar" }
+      ]
+    },
+    {
+      "name": "Shared ZG Priest Drops",
+      "items": [
+        { "name": "Band of Servitude" },
+        { "name": "Seal of the Gurubashi Berserker" },
+        { "name": "Cloak of the Hakkari Worshipers" },
+        { "name": "Might of the Tribe" },
+        { "name": "Zulian Headdress" },
+        { "name": "Belt of Untapped Power" },
+        { "name": "Blooddrenched Mask" },
+        { "name": "Gloves of the Tormented" },
+        { "name": "Sacrificial Gauntlets" },
+        { "name": "Zulian Scepter of Rites" }
+      ]
+    },
+    {
+      "name": "Trash Mobs",
+      "items": [
+        { "name": "Shadow Panther Hide Gloves" },
+        { "name": "Shadow Panther Hide Belt" },
+        { "name": "Gurubashi Helm" },
+        { "name": "Sceptre of Smiting" },
+        { "name": "Zulian Hacker" },
+        { "name": "Zulian Ceremonial Staff" },
+        { "name": "Blood Scythe" },
+        { "name": "Razzashi Hatchling" }
+      ]
+    }
+  ]
+},
+  "MoltenCore": {
+  "id": "MoltenCore",
+  "name": "Molten Core",
+  "expansion": "Classic",
+  "bosses": [
+    {
+      "name": "Lucifron",
+      "items": [
+        { "name": "Blastershot Launcher" },
+        { "name": "Deep Earth Spaulders" },
+        { "name": "Magma Tempered Boots" },
+        { "name": "Mana Igniting Cord" },
+        { "name": "Manastorm Leggings" },
+        { "name": "Obsidian Edged Blade" },
+        { "name": "Seal of the Archmagus" },
+        { "name": "Staff of Dominance" },
+        { "name": "Wristguards of Stability" },
+        { "name": "Molten Wristguards" }
+      ]
+    },
+    {
+      "name": "Magmadar",
+      "items": [
+        { "name": "Aged Core Leather Gloves" },
+        { "name": "Aurastone Hammer" },
+        { "name": "Corebound Shoulders" },
+        { "name": "Drillborer Disk" },
+        { "name": "Earthshaker" },
+        { "name": "Eskhandar's Right Claw" },
+        { "name": "Gutgore Ripper" },
+        { "name": "Heavy Dark Iron Ring" },
+        { "name": "Helm of the Lifegiver" },
+        { "name": "Medallion of Steadfast Might" },
+        { "name": "Molten Legguards" }
+      ]
+    },
+    {
+      "name": "Gehennas",
+      "items": [
+        { "name": "Brutality Blade" },
+        { "name": "Crimson Shocker" },
+        { "name": "Fire Runed Grimoire" },
+        { "name": "Flameguard Gauntlets" },
+        { "name": "Flamewaker Legplates" },
+        { "name": "Flamewalker Shoulderguards" },
+        { "name": "Quick Strike Ring" },
+        { "name": "Sabatons of the Flamewalker" },
+        { "name": "Sorcerous Dagger" },
+        { "name": "Molten Handguards" }
+      ]
+    },
+        {
+      "name": "Garr",
+      "items": [
+        { "name": "Aged Core Leather Gloves" },
+        { "name": "Aurastone Hammer" },
+        { "name": "Drillborer Disk" },
+        { "name": "Earthshaker" },
+        { "name": "Eskhandar's Right Claw" },
+        { "name": "Gutgore Ripper" },
+        { "name": "Heavy Dark Iron Ring" },
+        { "name": "Helm of the Lifegiver" },
+        { "name": "Medallion of Steadfast Might" },
+        { "name": "Bindings of the Windseeker" },
+        { "name": "Talisman of Binding Shard" },
+        { "name": "Medallion of Binding Shard" },
+        { "name": "Molten Headpiece" }
+      ]
+    },
+    {
+      "name": "Shazzrah",
+      "items": [
+        { "name": "Azuresong Mageblade" },
+        { "name": "Choker of Enlightenment" },
+        { "name": "Embercloth Robe" },
+        { "name": "Embercloth Wraps" },
+        { "name": "Ring of Spell Power" },
+        { "name": "Robe of Volatile Power" },
+        { "name": "Salamander Scale Pants" },
+        { "name": "Shadowstrike" },
+        { "name": "Striker's Mark" },
+        { "name": "Talisman of Ephemeral Power" },
+        { "name": "Molten Girdle" }
+      ]
+    },
+    {
+      "name": "Baron Geddon",
+      "items": [
+        { "name": "Blastershot Launcher" },
+        { "name": "Deep Earth Spaulders" },
+        { "name": "Magma Tempered Boots" },
+        { "name": "Mana Igniting Cord" },
+        { "name": "Manastorm Leggings" },
+        { "name": "Obsidian Edged Blade" },
+        { "name": "Seal of the Archmagus" },
+        { "name": "Staff of Dominance" },
+        { "name": "Wristguards of Stability" },
+        { "name": "Bindings of the Windseeker" },
+        { "name": "Molten Spaulders" }
+      ]
+    },
+    {
+      "name": "Golemagg the Incinerator",
+      "items": [
+        { "name": "Blastershot Launcher" },
+        { "name": "Deep Earth Spaulders" },
+        { "name": "Magma Forged Walkers" },
+        { "name": "Magma Tempered Boots" },
+        { "name": "Mana Igniting Cord" },
+        { "name": "Manastorm Leggings" },
+        { "name": "Obsidian Edged Blade" },
+        { "name": "Seal of the Archmagus" },
+        { "name": "Staff of Dominance" },
+        { "name": "Wristguards of Stability" },
+        { "name": "Sulfuron Ingot" },
+         { "name": "Molten Tunic" }
+      ]
+    },
+    {
+      "name": "Sulfuron Harbinger",
+      "items": [
+        { "name": "Azuresong Mageblade" },
+        { "name": "Blazing Slippers" },
+        { "name": "Choker of Enlightenment" },
+        { "name": "Flamebound Harness" },
+        { "name": "Ring of Spell Power" },
+        { "name": "Robe of Volatile Power" },
+        { "name": "Salamander Scale Pants" },
+        { "name": "Shadowstrike" },
+        { "name": "Striker's Mark" },
+        { "name": "Talisman of Ephemeral Power" },
+        { "name": "Molten Boots" }
+      ]
+    },
+    {
+      "name": "Majordomo Executus",
+      "items": [
+        { "name": "Finkle's Lava Dredger" },
+        { "name": "Core Hound Tooth" },
+        { "name": "Core Forged Greaves" },
+        { "name": "Wild Growth Spaulders" },
+        { "name": "Gloves of the Hypnotic Flame" },
+        { "name": "Sash of Whispered Secrets" },
+        { "name": "Wristguards of True Flight" },
+        { "name": "Fireproof Cloak" },
+        { "name": "Cauterizing Band" },
+        { "name": "Anathema" },
+        { "name": "Benediction" },
+        { "name": "Ancient Petrified Leaf" },
+        { "name": "Chromatic Wristguards" }
+      ]
+    },
+    {
+      "name": "Ragnaros",
+      "items": [
+        { "name": "Band of Accuria" },
+        { "name": "Band of Sulfuras" },
+        { "name": "Choker of the Fire Lord" },
+        { "name": "Cloak of the Shrouded Mists" },
+        { "name": "Dragon's Blood Cape" },
+        { "name": "Crown of Destruction" },
+        { "name": "Onslaught Girlde" },
+        { "name": "Veil of Flame Worshipper" },
+        { "name": "Blade of Dragon Bone" },
+        { "name": "Boneweaver's Edge" },
+        { "name": "Spinal Reaper" },
+        { "name": "Malistar's Defender" },
+        { "name": "Essence of the Pure Flame" },
+        { "name": "Perdition's Blade" },
+        { "name": "Eye of Sulfuras" },
+        { "name": "Chromatic Legguards" }
+      ]
+    },
+    {
+      "name": "Shared Boss Drops",
+      "items": [
+        { "name": "Schematic: Core Marksman Rifle" },
+        { "name": "Schematic: Force Reactive Disk" },
+        { "name": "Schematic: Biznicks 247x128 Accurascope" },
+        { "name": "Formula: Enchant Weapon - Spell Power" },
+        { "name": "Formula: Enchant Weapon - Healing Power" },
+        { "name": "Pattern: Core Armor Kit" },
+        { "name": "Pattern: Flarecore Wraps" },
+        { "name": "Pattern: Core Felcloth Bag" },
+        { "name": "Recipe: Major Rejuvenation Potion" }
+      ]
+    }
+  ]
+},
+"Onyxia60": {
+  "id": "Onyxia60",
+  "name": "Onyxia's Lair",
+  "expansion": "Classic",
+  "bosses": [
+    {
+      "name": "Onyxia",
+      "items": [
+        { "name": "Sapphiron Drape" },
+        { "name": "Eskhandar's Collar" },
+        { "name": "Ring of Binding" },
+        { "name": "Shard of the Scale" },
+        { "name": "Ancient Cornerstone Grimoire" },
+        { "name": "Vis'kag the Bloodletter" },
+        { "name": "Deathbringer" },
+        { "name": "Insignia of the Dragon" },
+        { "name": "Neltharion's Badge" },
+        { "name": "Wand of the Noble" },
+        { "name": "Mace of the Dragon Knight" },
+        { "name": "Band of Nyxondra" },
+        { "name": "Flame-Infused Sceptre" },
+        { "name": "Draconic Effigy" },
+        { "name": "Charred Breastplate" },
+        { "name": "Head of Onyxia" },
+        { "name": "Chromatic Headpiece" }
+      ]
+    },
+    {
+      "name": "Basalthane",
+      "items": [
+        { "name": "Drakon Soul Shard" },
+        { "name": "Obsidian Heartseeker" },
+        { "name": "Living Lavastone Conduit" }
+      ]
+    }
+  ]
+},
+"BlackwingLair": {
+  "id": "BlackwingLair",
+  "name": "Blackwing Lair",
+  "expansion": "Classic",
+  "bosses": [
+    {
+      "name": "Razorgore the Untamed",
+      "items": [
+        { "name": "The Untamed Blade" },
+        { "name": "Spineshatter" },
+        { "name": "Mantle of the Blackwing Cabal" },
+        { "name": "Gloves of Rapid Evolution" },
+        { "name": "Arcane Infused Gem" },
+        { "name": "Primalist's Linked Legguards"},
+        { "name": "Malfurion's Blessed Bulwark" },
+        { "name": "The Black Book" },
+        { "name": "Ring of Blackrock" },
+        { "name": "Soulsong Crystal" },
+        { "name": "Herald of Woe" },
+        { "name": "Living Blood Gem" },
+        { "name": "Band of Dark Dominion" },
+        { "name": "Boots of Pure Thought" },
+        { "name": "Cloak of Draconic Might" },
+        { "name": "Chromatic Wristguards" }
+      ]
+    },
+    {
+      "name": "Vaelastrasz the Corrupt",
+      "items": [
+        { "name": "Band of Forced Concentration" },
+        { "name": "Dragon's Touch" },
+        { "name": "Shroud of Pure Thought" },
+        { "name": "Dragonfang Blade" },
+        { "name": "Drake Talon Pauldrons" },
+        { "name": "Ring of Trinity Force" },
+        { "name": "Scrolls of Blinding Light" },
+        { "name": "Red Dragonscale Protector" },
+        { "name": "Helm of Endless Rage" },
+        { "name": "Pendant of the Fallen Dragon" },
+        { "name": "Mind Quickening Gem" },
+        { "name": "Rune of Metamorphosis" },
+        { "name": "Chromatic Girdle" }
+      ]
+    },
+    {
+      "name": "Broodlord Lashlayer",
+      "items": [
+        { "name": "Aegis of Preservation" },
+        { "name": "Black Ash Robe" },
+        { "name": "Legguards of the Fallen Crusader" },
+        { "name": "Circle of Applied Force" },
+        { "name": "Claw of the Black Drake" },
+        { "name": "Heartstriker" },
+        { "name": "Kirasath'Dargonax, Fate of the Devourer" },
+        { "name": "Maladath, Runed Blade of the Black Flight" },
+        { "name": "Black Brood Pauldrons" },
+        { "name": "Lifegiving Gem" },
+        { "name": "Venomous Totem" },
+        { "name": "Bracers of Arcane Accuracy" },
+        { "name": "Chromatic Boots" }
+      ]
+    },
+    {
+      "name": "Firemaw",
+      "items": [
+        { "name": "Ebony Flame Gloves" },
+        { "name": "Emberweave Leggings" },
+        { "name": "Natural Alignment Crystal" },
+        { "name": "Rejuvenating Gem" },
+        { "name": "Dragonbreath Hand Cannon" },
+        { "name": "Drake Fang Talisman" },
+        { "name": "Styleen's Impending Scarab" },
+        { "name": "Taut Dragonhide Belt" },
+        { "name": "Shadow Wing Focus Staff" },
+        { "name": "Drake Talon Cleaver" },
+        { "name": "Cloak of Firemaw" },
+        { "name": "Firemaw's Clutch" },
+        { "name": "Chromatic Handguards" }
+      ]
+    },
+    {
+      "name": "Ebonroc",
+      "items": [
+        { "name": "Aegis of Preservation" },
+        { "name": "Band of Forced Concentration" },
+        { "name": "Drake Talon Pauldrons" },
+        { "name": "Rejuvenating Gem" },
+        { "name": "Ring of Blackrock" },
+        { "name": "Drake Talon Cleaver" },
+        { "name": "Shadow Wing Focus Staff" },
+        { "name": "Dragonbreath Hand Cannon" },
+        { "name": "Ebony Flame Gloves" },
+        { "name": "Malfurion's Blessed Bulwark" },
+        { "name": "Band of Forced Concentration" },
+        { "name": "Drake Fang Talisman" },
+        { "name": "Taut Dragonhide Belt" },
+        { "name": "Chromatic Handguards" }
+      ]
+    },
+    {
+      "name": "Flamegor",
+      "items": [
+        { "name": "Drake Talon Cleaver" },
+        { "name": "Drake Talon Pauldrons" },
+        { "name": "Ring of Trinity Force" },
+        { "name": "Shadow Wing Focus Staff" },
+        { "name": "Styleen's Impending Scarab" },
+        { "name": "Taut Dragonhide Belt" },
+        { "name": "Herald of Woe" },
+        { "name": "Dragon's Touch" },
+        { "name": "Crul'shorukh, Edge of Chaos" },
+        { "name": "Rejuvenating Gem" },
+        { "name": "Shroud of Pure Thought" },
+        { "name": "Emberweave Leggings" },
+        { "name": "Circle of Applied Force" },
+        { "name": "Ring of Blackrock" },
+        { "name": "Chromatic Handguards" }
+      ]
+    },
+    {
+      "name": "Chromaggus",
+      "items": [
+        { "name": "Elementium Reinforced Bulwark" },
+        { "name": "Ashjre'thul, Crossbow of Smiting" },
+        { "name": "Drakeadon's Stompers" },
+        { "name": "Elementium Threaded Cloak" },
+        { "name": "Angelista's Grasp" },
+        { "name": "Empowered Leggings" },
+        { "name": "Shimmering Geta" },
+        { "name": "Taut Dragonhide Gloves" },
+        { "name": "Taut Dragonhide Shoulderpads" },
+        { "name": "Girdle of the Fallen Crusader" },
+        { "name": "Primalist's Linked Waistguard" },
+        { "name": "Claw of Chromaggus" },
+        { "name": "Chromatically Tempered Sword" },
+        { "name": "Chromatic Spaulders" }
+      ]
+    },
+    {
+      "name": "Nefarian",
+      "items": [
+        { "name": "Neltharion's Tear" },
+        { "name": "Archimtiros' Ring of Armageddon" },
+        { "name": "Prestor's Talisman of Connivery" },
+        { "name": "Ashkandi, Greatsword of the Brotherhood" },
+        { "name": "Crul'shorukh, Edge of Chaos" },
+        { "name": "Lok'amir il Romathis" },
+        { "name": "Staff of the Shadow Flame" },
+        { "name": "Mish'undare, Circlet of the Mind Flayer" },
+        { "name": "Cloak of the Brood Lord" },
+        { "name": "Therazane's Link" },
+        { "name": "Boots of the Shadow Flame" },
+        { "name": "Archimtiros' Ring of Reckoning" },
+        { "name": "Pure Elementium Band" },
+        { "name": "Head of Nefarian" },
+        { "name": "Chromatic Tunic" }
+      ]
+    },
+    {
+      "name": "Trash Mobs",
+      "items": [
+        { "name": "Band of Dark Dominion" },
+        { "name": "Draconic Avenger" },
+        { "name": "Essence Gatherer" },
+        { "name": "Cloak of Draconic Might" },
+        { "name": "Boots of Pure Thought" },
+        { "name": "Ringo's Blizzard Boots" },
+        { "name": "Interlaced Shadow Jerkin" },
+        { "name": "Doom's Edge" },
+        { "name": "Draconic Maul" },
+        { "name": "Elementium Ore" }
+      ]
+    }
+  ]
+}
+}
