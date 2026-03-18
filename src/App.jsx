@@ -6,16 +6,22 @@ import { doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, serverTimestamp,
 
 
 function App() {
+
   const [selectedRaidId, setSelectedRaidId] = useState(null);
   const [reserves, setReserves] = useState({});
   const [playerNames, setPlayerNames] = useState({});
   const [adminMode, setAdminMode] = useState(false);
   const [showMyReserves, setShowMyReserves] = useState(false);
   const [playerName, setPlayerName] = useState(
-  localStorage.getItem("playerName") || "");
+    localStorage.getItem("playerName") || ""
+  );
   const [nameSaved, setNameSaved] = useState(false);
 
-  
+  // ⭐ This is perfect — just keep it exactly like this
+  function resetLayout() {
+    setSelectedRaidId(null);     // return to main raid list
+    setShowMyReserves(false);    // close My Reserves if open
+  }
 
   const raidList = Object.values(raids);
   const selectedRaid = raidList.find(r => r.id === selectedRaidId) || null;
@@ -77,29 +83,21 @@ function App() {
   }
 
   // Shared unreserve function (used by RaidDetail + MyReserves)
-  async function unreserveItem(raidId, bossName, itemName) {
-  const uid = auth.currentUser?.uid;
-  if (!uid) return;
-  if (!playerName.trim()) return;
-
-  const character = playerName.trim();
+ async function unreserveItem(raidId, bossName, itemName, character) {
   const docId = `${raidId}-${bossName}-${itemName}`;
   const ref = doc(db, "reserves", docId);
   const snap = await getDoc(ref);
+
   if (!snap.exists()) return;
 
   const data = snap.data();
   const current = Array.isArray(data.reservedBy) ? data.reservedBy : [];
 
-  // Remove ALL characters belonging to this account for this item
-const updated = current.filter(x => x.uid !== uid);
+  const updated = current.filter(
+    x => !(x.uid === auth.currentUser.uid && x.character === character)
+  );
 
-
-  if (updated.length === 0) {
-    await deleteDoc(ref);
-  } else {
-    await updateDoc(ref, { reservedBy: updated });
-  }
+  await updateDoc(ref, { reservedBy: updated });
 }
 
 
@@ -163,25 +161,27 @@ const updated = current.filter(x => x.uid !== uid);
     value={playerName}
     onChange={(e) => {
       setPlayerName(e.target.value);
-      setNameSaved(false); // remove glow while typing
+      setNameSaved(false);
     }}
     onKeyDown={async (e) => {
-  if (e.key === "Enter" && playerName.trim() !== "") {
-    const name = playerName.trim();
-    localStorage.setItem("playerName", name);
-    setNameSaved(true);
+      if (e.key === "Enter" && playerName.trim() !== "") {
+        const name = playerName.trim();
+        localStorage.setItem("playerName", name);
+        setNameSaved(true);
 
-    // Save to Firestore
-    const uid = auth.currentUser?.uid;
-    if (uid) {
-      await setDoc(doc(db, "players", uid), { name }, { merge: true });
-    }
+        // Save to Firestore
+        const uid = auth.currentUser?.uid;
+        if (uid) {
+          await setDoc(doc(db, "players", uid), { name }, { merge: true });
+        }
 
-    // remove glow after 1.5 seconds
-    setTimeout(() => setNameSaved(false), 1500);
-  }
-}}
+        // ⭐ Reset UI back to default layout
+        resetLayout();
 
+        // remove glow after 1.5 seconds
+        setTimeout(() => setNameSaved(false), 1500);
+      }
+    }}
     style={{
       padding: "0.5rem 1rem",
       fontSize: "1rem",
@@ -198,6 +198,17 @@ const updated = current.filter(x => x.uid !== uid);
     }}
   />
 
+  <div
+    style={{
+      marginTop: "0.5rem",
+      color: "#aaa",
+      fontSize: "0.85rem",
+      opacity: 0.8
+    }}
+  >
+    Press Enter to save your name
+  </div>
+
   {nameSaved && (
     <div
       style={{
@@ -212,6 +223,7 @@ const updated = current.filter(x => x.uid !== uid);
     </div>
   )}
 </div>
+
 
 
 
@@ -336,6 +348,8 @@ const updated = current.filter(x => x.uid !== uid);
             reserves={reserves}
             playerNames={playerNames}
             unreserveItem={unreserveItem}
+            playerName={playerName}
+            resetLayout={resetLayout}
           />
         )
       ) : (
@@ -345,75 +359,75 @@ const updated = current.filter(x => x.uid !== uid);
   );
 }
 
-function RaidDetail({ raid, reserves, playerNames, unreserveItem }) {
-  const [playerName, setPlayerName] = useState("");
+function RaidDetail({
+  raid,
+  reserves,
+  playerNames,
+  unreserveItem,
+  playerName,     // coming from App
+  resetLayout     // coming from App
+}) {
   const [selectedBoss, setSelectedBoss] = useState(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("playerName");
-    if (saved) setPlayerName(saved);
-  }, []);
-
+  // ⭐ playerName now comes from props, so this is safe
   const trimmedName = playerName.trim();
   const uid = auth.currentUser?.uid || null;
 
   async function reserveItem(raidId, bossName, itemName) {
-  const uid = auth.currentUser?.uid;
-  if (!uid) return;
-  if (!trimmedName) return;
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+    if (!trimmedName) return;
 
-  const character = trimmedName;
-  const docId = `${raidId}-${bossName}-${itemName}`;
-  const ref = doc(db, "reserves", docId);
-  const snap = await getDoc(ref);
+    const character = trimmedName;
+    const docId = `${raidId}-${bossName}-${itemName}`;
+    const ref = doc(db, "reserves", docId);
+    const snap = await getDoc(ref);
 
-  const entry = { uid, character };
+    const entry = { uid, character };
 
-  // ⭐ 2-per-raid limit PER CHARACTER
-  const userReserveCount = raid.bosses.reduce((count, boss) => {
-    boss.items.forEach(item => {
-      const key = `${boss.name}-${item.name}`;
-      const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
+    // ⭐ 2-per-raid limit PER CHARACTER
+    const userReserveCount = raid.bosses.reduce((count, boss) => {
+      boss.items.forEach(item => {
+        const key = `${boss.name}-${item.name}`;
+        const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
 
-      // Count only THIS character, not the whole account
-      if (arr.some(x => x.uid === uid && x.character === character)) {
-        count++;
-      }
-    });
-    return count;
-  }, 0);
-
-  if (userReserveCount >= 2) {
-    alert(`Character "${character}" already has 2 reserves in this raid.`);
-    return;
-  }
-
-  // ⭐ Write logic
-  if (!snap.exists()) {
-    // First reservation for this item
-    await setDoc(ref, {
-      raidId,
-      boss: bossName,
-      item: itemName,
-      reservedBy: [entry],
-      createdAt: serverTimestamp()
-    });
-  } else {
-    const data = snap.data();
-    const current = Array.isArray(data.reservedBy) ? data.reservedBy : [];
-
-    // Prevent duplicate entries for same character
-    const already = current.some(
-      x => x.uid === uid && x.character === character
-    );
-
-    if (!already) {
-      await updateDoc(ref, {
-        reservedBy: arrayUnion(entry)
+        if (arr.some(x => x.uid === uid && x.character === character)) {
+          count++;
+        }
       });
+      return count;
+    }, 0);
+
+    if (userReserveCount >= 2) {
+      alert(`Character "${character}" already has 2 reserves in this raid.`);
+      return;
+    }
+
+    // ⭐ Write logic
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        raidId,
+        boss: bossName,
+        item: itemName,
+        reservedBy: [entry],
+        createdAt: serverTimestamp()
+      });
+    } else {
+      const data = snap.data();
+      const current = Array.isArray(data.reservedBy) ? data.reservedBy : [];
+
+      const already = current.some(
+        x => x.uid === uid && x.character === character
+      );
+
+      if (!already) {
+        await updateDoc(ref, {
+          reservedBy: arrayUnion(entry)
+        });
+      }
     }
   }
-}
+
 
 
   return (
@@ -480,7 +494,7 @@ function RaidDetail({ raid, reserves, playerNames, unreserveItem }) {
                         }}
                         onClick={e => {
                           e.stopPropagation();
-                          unreserveItem(raid.id, boss.name, item.name);
+                          unreserveItem(raid.id, boss.name, item.name, playerName);
                         }}
                       >
                         Unreserve
@@ -598,7 +612,37 @@ function MyReservesView({ raids, reserves, playerNames, unreserveItem }) {
                   if (arr.length === 1) color = "#ffcc00";
                   if (arr.length >= 2) color = "#ff5555";
 
-                  const myEntry = arr.find(x => x.uid === uid);
+                  // All entries for this item that belong to this account
+const myEntries = arr.filter(x => x.uid === uid);
+
+return myEntries.map(entry => (
+  <li
+    key={item.itemName + "-" + entry.character}
+    style={{
+      marginBottom: "0.25rem",
+      color: color
+    }}
+  >
+    {item.itemName}
+    <span style={{ marginLeft: "0.5rem", color: "#ccc" }}>
+      ({entry.character})
+    </span>
+
+    <button
+      style={{
+        marginLeft: "0.5rem",
+        padding: "0.1rem 0.4rem",
+        fontSize: "0.8rem",
+        cursor: "pointer"
+      }}
+      onClick={() =>
+        unreserveItem(item.raidId, item.bossName, item.itemName, entry.character)
+      }
+    >
+      Unreserve
+    </button>
+  </li>
+));
 
 return (
   <li
@@ -794,8 +838,10 @@ function AdminPanel({ raid, reserves, allRaids, playerNames, unreserveItem }) {
                   const displayNames = arr.map(x => x.character);
 
                   const userHasThisReserved = arr.some(
-  x => x.uid === currentUid && x.character === trimmedName
-);
+                    x => x.uid === currentUid
+                  );
+
+
 
 
                   return (
@@ -815,22 +861,7 @@ function AdminPanel({ raid, reserves, allRaids, playerNames, unreserveItem }) {
                         </span>
                       )}
 
-                      {userHasThisReserved && (
-                        <button
-                          style={{
-                            marginLeft: "0.5rem",
-                            padding: "0.1rem 0.4rem",
-                            fontSize: "0.8rem",
-                            cursor: "pointer"
-                          }}
-                          onClick={e => {
-                            e.stopPropagation();
-                            unreserveItem(raid.id, boss.name, item.name);
-                          }}
-                        >
-                          Unreserve
-                        </button>
-                      )}
+
                     </li>
                   );
                 })}
