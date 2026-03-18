@@ -1,25 +1,9 @@
 import { useState, useEffect } from "react";
 import raids from "./data/raids.json";
 import { auth, db } from "./firebase";
-import {
-  doc,
-  setDoc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  collection,
-  onSnapshot
-} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc, serverTimestamp, onSnapshot, collection } from "firebase/firestore";
 
-// Store player name in Firestore under players/{uid}
-async function savePlayerName(name) {
-  const trimmed = name.trim();
-  if (!trimmed || !auth.currentUser) return;
-
-  await setDoc(doc(db, "players", auth.currentUser.uid), {
-    name: trimmed
-  });
-}
 
 function App() {
   const [selectedRaidId, setSelectedRaidId] = useState(null);
@@ -27,6 +11,11 @@ function App() {
   const [playerNames, setPlayerNames] = useState({});
   const [adminMode, setAdminMode] = useState(false);
   const [showMyReserves, setShowMyReserves] = useState(false);
+  const [playerName, setPlayerName] = useState(
+  localStorage.getItem("playerName") || "");
+  const [nameSaved, setNameSaved] = useState(false);
+
+  
 
   const raidList = Object.values(raids);
   const selectedRaid = raidList.find(r => r.id === selectedRaidId) || null;
@@ -37,15 +26,20 @@ function App() {
       const data = {};
 
       snapshot.forEach(docSnap => {
-        const r = docSnap.data();
-        const key = `${r.boss}-${r.item}`;
+  const r = docSnap.data();
+  const key = `${r.boss}-${r.item}`;
 
-        data[key] = Array.isArray(r.reservedBy)
-          ? r.reservedBy
-          : r.reservedBy
-          ? [r.reservedBy]
-          : [];
-      });
+  let arr = Array.isArray(r.reservedBy) ? r.reservedBy : [];
+
+  // MIGRATION: convert old string entries to new objects
+  arr = arr.map(x =>
+    typeof x === "string"
+      ? { uid: x, character: playerNames[x] || "Unknown" }
+      : x
+  );
+
+  data[key] = arr;
+});
 
       setReserves(data);
     });
@@ -86,7 +80,9 @@ function App() {
   async function unreserveItem(raidId, bossName, itemName) {
   const uid = auth.currentUser?.uid;
   if (!uid) return;
+  if (!playerName.trim()) return;
 
+  const character = playerName.trim();
   const docId = `${raidId}-${bossName}-${itemName}`;
   const ref = doc(db, "reserves", docId);
   const snap = await getDoc(ref);
@@ -94,7 +90,10 @@ function App() {
 
   const data = snap.data();
   const current = Array.isArray(data.reservedBy) ? data.reservedBy : [];
-  const updated = current.filter(x => x !== uid);
+
+  // Remove ALL characters belonging to this account for this item
+const updated = current.filter(x => x.uid !== uid);
+
 
   if (updated.length === 0) {
     await deleteDoc(ref);
@@ -102,6 +101,7 @@ function App() {
     await updateDoc(ref, { reservedBy: updated });
   }
 }
+
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -155,6 +155,66 @@ function App() {
 
   You can also export everyone's reserves to a <strong>.txt</strong> file under <em>Current Reserves</em>.
 </div>
+
+<div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+  <input
+    type="text"
+    placeholder="Enter your character name"
+    value={playerName}
+    onChange={(e) => {
+      setPlayerName(e.target.value);
+      setNameSaved(false); // remove glow while typing
+    }}
+    onKeyDown={async (e) => {
+  if (e.key === "Enter" && playerName.trim() !== "") {
+    const name = playerName.trim();
+    localStorage.setItem("playerName", name);
+    setNameSaved(true);
+
+    // Save to Firestore
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      await setDoc(doc(db, "players", uid), { name }, { merge: true });
+    }
+
+    // remove glow after 1.5 seconds
+    setTimeout(() => setNameSaved(false), 1500);
+  }
+}}
+
+    style={{
+      padding: "0.5rem 1rem",
+      fontSize: "1rem",
+      borderRadius: "6px",
+      border: nameSaved ? "1px solid gold" : "1px solid #666",
+      backgroundColor: "#1a1a1a",
+      color: "#f0e6d2",
+      width: "260px",
+      textAlign: "center",
+      boxShadow: nameSaved
+        ? "0 0 10px rgba(255, 215, 0, 0.8)"
+        : "0 0 6px rgba(255, 215, 0, 0.3)",
+      transition: "box-shadow 0.3s ease, border 0.3s ease"
+    }}
+  />
+
+  {nameSaved && (
+    <div
+      style={{
+        marginTop: "0.5rem",
+        color: "#f8e6a0",
+        fontSize: "0.9rem",
+        textShadow: "0 0 6px rgba(255, 215, 0, 0.7)",
+        transition: "opacity 0.3s ease"
+      }}
+    >
+      Saved!
+    </div>
+  )}
+</div>
+
+
+
 
 
 
@@ -264,11 +324,12 @@ function App() {
       ) : selectedRaid ? (
         adminMode ? (
           <AdminPanel
-            raid={selectedRaid}
-            reserves={reserves}
-            allRaids={raidList}
-            playerNames={playerNames}
-          />
+  raid={selectedRaid}
+  reserves={reserves}
+  allRaids={raidList}
+  playerNames={playerNames}
+  unreserveItem={unreserveItem}
+/>
         ) : (
           <RaidDetail
             raid={selectedRaid}
@@ -296,91 +357,68 @@ function RaidDetail({ raid, reserves, playerNames, unreserveItem }) {
   const trimmedName = playerName.trim();
   const uid = auth.currentUser?.uid || null;
 
-  const playerReserveCountForThisRaid = raid.bosses.reduce((count, boss) => {
-  boss.items.forEach(item => {
-    const key = `${boss.name}-${item.name}`;
-    const arr = reserves[key];
-    if (Array.isArray(arr) && uid && arr.includes(uid)) {
-      count++;
-    }
-  });
-  return count;
-}, 0);
-
-
   async function reserveItem(raidId, bossName, itemName) {
-    if (!trimmedName) {
-      alert("Please enter your character name first.");
-      return;
-    }
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+  if (!trimmedName) return;
 
-    if (!uid) {
-      alert("No user ID available yet. Try refreshing.");
-      return;
-    }
+  const character = trimmedName;
+  const docId = `${raidId}-${bossName}-${itemName}`;
+  const ref = doc(db, "reserves", docId);
+  const snap = await getDoc(ref);
 
-    if (playerReserveCountForThisRaid >= 2) {
-  alert("You have reached the maximum of 2 reserves for this raid.");
-  return;
+  const entry = { uid, character };
+
+  // ⭐ 2-per-raid limit PER CHARACTER
+  const userReserveCount = raid.bosses.reduce((count, boss) => {
+    boss.items.forEach(item => {
+      const key = `${boss.name}-${item.name}`;
+      const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
+
+      // Count only THIS character, not the whole account
+      if (arr.some(x => x.uid === uid && x.character === character)) {
+        count++;
+      }
+    });
+    return count;
+  }, 0);
+
+  if (userReserveCount >= 2) {
+    alert(`Character "${character}" already has 2 reserves in this raid.`);
+    return;
+  }
+
+  // ⭐ Write logic
+  if (!snap.exists()) {
+    // First reservation for this item
+    await setDoc(ref, {
+      raidId,
+      boss: bossName,
+      item: itemName,
+      reservedBy: [entry],
+      createdAt: serverTimestamp()
+    });
+  } else {
+    const data = snap.data();
+    const current = Array.isArray(data.reservedBy) ? data.reservedBy : [];
+
+    // Prevent duplicate entries for same character
+    const already = current.some(
+      x => x.uid === uid && x.character === character
+    );
+
+    if (!already) {
+      await updateDoc(ref, {
+        reservedBy: arrayUnion(entry)
+      });
+    }
+  }
 }
 
-
-    const docId = `${raidId}-${bossName}-${itemName}`;
-    const ref = doc(db, "reserves", docId);
-    const existing = await getDoc(ref);
-
-    if (existing.exists()) {
-      const data = existing.data();
-      const current = Array.isArray(data.reservedBy) ? data.reservedBy : [];
-
-      if (current.includes(uid)) {
-        alert("You already reserved this item.");
-        return;
-      }
-
-      await setDoc(ref, {
-        raid: raidId,
-        boss: bossName,
-        item: itemName,
-        reservedBy: [...current, uid]
-      });
-    } else {
-      await setDoc(ref, {
-        raid: raidId,
-        boss: bossName,
-        item: itemName,
-        reservedBy: [uid]
-      });
-    }
-
-    // Also save the display name for this UID
-    await savePlayerName(trimmedName);
-  }
 
   return (
     <div>
       <h2>{raid.name}</h2>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <input
-          type="text"
-          placeholder="Enter your character name"
-          value={playerName}
-          onChange={e => {
-            setPlayerName(e.target.value);
-            localStorage.setItem("playerName", e.target.value);
-            savePlayerName(e.target.value);
-          }}
-          style={{
-            padding: "0.5rem",
-            marginRight: "0.5rem",
-            border: "1px solid #444",
-            background: "#222",
-            color: "white"
-          }}
-        />
-      </div>
-
       {raid.bosses.map(boss => (
         <div
           key={boss.name}
@@ -407,52 +445,49 @@ function RaidDetail({ raid, reserves, playerNames, unreserveItem }) {
                 if (arr.length === 1) color = "#ffcc00";
                 if (arr.length >= 2) color = "#ff5555";
 
-                const displayNames = arr.map(
-                  id => playerNames[id] || id
-                );
+                const displayNames = arr.map(x => x.character);
 
-                const userHasThisReserved = uid && arr.includes(uid);
+                const userHasThisReserved = arr.some(x => x.uid === uid);
 
                 return (
-  <li
-    key={item.name}
-    style={{
-      padding: "0.25rem 0",
-      cursor: "pointer",
-      color: color
-    }}
-    onClick={e => {
-      e.stopPropagation();
-      reserveItem(raid.id, boss.name, item.name);
-    }}
-  >
-    {item.name}
+                  <li
+                    key={item.name}
+                    style={{
+                      padding: "0.25rem 0",
+                      cursor: "pointer",
+                      color: color
+                    }}
+                    onClick={e => {
+                      e.stopPropagation();
+                      reserveItem(raid.id, boss.name, item.name);
+                    }}
+                  >
+                    {item.name}
 
-    {arr.length > 0 && (
-      <span style={{ marginLeft: "0.5rem" }}>
-        — Reserved by: {displayNames.join(", ")}
-      </span>
-    )}
+                    {arr.length > 0 && (
+                      <span style={{ marginLeft: "0.5rem" }}>
+                        — Reserved by: {displayNames.join(", ")}
+                      </span>
+                    )}
 
-    {userHasThisReserved && (
-      <button
-        style={{
-          marginLeft: "0.5rem",
-          padding: "0.1rem 0.4rem",
-          fontSize: "0.8rem",
-          cursor: "pointer"
-        }}
-        onClick={e => {
-          e.stopPropagation();
-          unreserveItem(raid.id, boss.name, item.name);
-        }}
-      >
-        Unreserve
-      </button>
-    )}
-  </li>
-);
-
+                    {userHasThisReserved && (
+                      <button
+                        style={{
+                          marginLeft: "0.5rem",
+                          padding: "0.1rem 0.4rem",
+                          fontSize: "0.8rem",
+                          cursor: "pointer"
+                        }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          unreserveItem(raid.id, boss.name, item.name);
+                        }}
+                      >
+                        Unreserve
+                      </button>
+                    )}
+                  </li>
+                );
               })}
             </ul>
           )}
@@ -461,6 +496,7 @@ function RaidDetail({ raid, reserves, playerNames, unreserveItem }) {
     </div>
   );
 }
+
 
 function MyReservesView({ raids, reserves, playerNames, unreserveItem }) {
   const [playerName, setPlayerName] = useState("");
@@ -483,7 +519,11 @@ function MyReservesView({ raids, reserves, playerNames, unreserveItem }) {
         const key = `${boss.name}-${item.name}`;
         const arr = reserves[key];
 
-        if (Array.isArray(arr) && uid && arr.includes(uid)) {
+        if (
+          Array.isArray(arr) &&
+          uid &&
+          arr.some(x => x.uid === uid)
+        ) {
           if (!grouped[raid.name]) grouped[raid.name] = {};
           if (!grouped[raid.name][boss.name]) grouped[raid.name][boss.name] = [];
           grouped[raid.name][boss.name].push({
@@ -526,7 +566,7 @@ function MyReservesView({ raids, reserves, playerNames, unreserveItem }) {
 
       {!trimmedName && (
         <p style={{ marginBottom: "0.5rem" }}>
-          Set your character name in the main view to see your reserves.
+          Set your character name first to see your reserves.
         </p>
       )}
 
@@ -551,46 +591,51 @@ function MyReservesView({ raids, reserves, playerNames, unreserveItem }) {
               <strong>{bossName}</strong>
               <ul style={{ marginTop: "0.5rem", listStyle: "none", paddingLeft: 0 }}>
                 {items.map(item => {
-  const key = `${item.bossName}-${item.itemName}`;
-  const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
+                  const key = `${item.bossName}-${item.itemName}`;
+                  const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
 
-  // Same color logic as RaidDetail & AdminPanel
-  let color = "#9cf";
-  if (arr.length === 1) color = "#ffcc00";
-  if (arr.length >= 2) color = "#ff5555";
+                  let color = "#9cf";
+                  if (arr.length === 1) color = "#ffcc00";
+                  if (arr.length >= 2) color = "#ff5555";
 
-  return (
-    <li
-      key={item.itemName}
+                  const myEntry = arr.find(x => x.uid === uid);
+
+return (
+  <li
+    key={item.itemName}
+    style={{
+      marginBottom: "0.25rem",
+      color: color
+    }}
+  >
+    {item.itemName}
+    {myEntry && (
+      <span style={{ marginLeft: "0.5rem", color: "#ccc" }}>
+        ({myEntry.character})
+      </span>
+    )}
+
+    <button
       style={{
-        marginBottom: "0.25rem",
-        color: color
+        marginLeft: "0.5rem",
+        padding: "0.1rem 0.4rem",
+        fontSize: "0.8rem",
+        cursor: "pointer"
       }}
+      onClick={() => handleUnreserveClick(item)}
     >
-      {item.itemName}
+      Unreserve
+    </button>
+  </li>
+);
 
-      <button
-        style={{
-          marginLeft: "0.5rem",
-          padding: "0.1rem 0.4rem",
-          fontSize: "0.8rem",
-          cursor: "pointer"
-        }}
-        onClick={() => handleUnreserveClick(item)}
-      >
-        Unreserve
-      </button>
-    </li>
-  );
-})}
-
+                })}
               </ul>
             </div>
           ))}
         </div>
       ))}
 
-      {/* Assuming you already have ConfirmModal defined somewhere */}
       <ConfirmModal
         isOpen={modalOpen}
         onCancel={handleCancelUnreserve}
@@ -605,8 +650,12 @@ function MyReservesView({ raids, reserves, playerNames, unreserveItem }) {
   );
 }
 
-function AdminPanel({ raid, reserves, allRaids, playerNames }) {
+
+function AdminPanel({ raid, reserves, allRaids, playerNames, unreserveItem }) {
   const [selectedBoss, setSelectedBoss] = useState(null);
+
+  const auth = getAuth();
+  const currentUid = auth.currentUser?.uid;
 
   function countBossReserves(boss) {
     let total = 0;
@@ -629,9 +678,7 @@ function AdminPanel({ raid, reserves, allRaids, playerNames }) {
         const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
 
         if (arr.length > 0) {
-          const displayNames = arr.map(
-            id => playerNames[id] || id
-          );
+          const displayNames = arr.map(x => x.character);
 
           rows.push({
             raid: raidObj.name,
@@ -737,34 +784,56 @@ function AdminPanel({ raid, reserves, allRaids, playerNames }) {
             {selectedBoss === boss.name && (
               <ul style={{ marginTop: "0.5rem", listStyle: "none", paddingLeft: 0 }}>
                 {boss.items.map(item => {
-  const key = `${boss.name}-${item.name}`;
-  const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
-  const displayNames = arr.map(id => playerNames[id] || id);
+                  const key = `${boss.name}-${item.name}`;
+                  const arr = Array.isArray(reserves[key]) ? reserves[key] : [];
 
-  // Color logic MUST come AFTER arr is defined
-  const count = arr.length;
-  let color = "#9cf";
-  if (count === 1) color = "#ffcc00";
-  if (count >= 2) color = "#ff5555";
+                  let color = "#9cf";
+                  if (arr.length === 1) color = "#ffcc00";
+                  if (arr.length >= 2) color = "#ff5555";
 
-  return (
-    <li
-      key={item.name}
-      style={{
-        padding: "0.25rem 0",
-        color: color
-      }}
-    >
-      {item.name}
+                  const displayNames = arr.map(x => x.character);
 
-      {arr.length > 0 && (
-        <span style={{ marginLeft: "0.5rem" }}>
-          — Reserved by: {displayNames.join(", ")}
-        </span>
-      )}
-    </li>
-  );
-})}
+                  const userHasThisReserved = arr.some(
+  x => x.uid === currentUid && x.character === trimmedName
+);
+
+
+                  return (
+                    <li
+                      key={item.name}
+                      style={{
+                        padding: "0.25rem 0",
+                        cursor: "default",
+                        color: color
+                      }}
+                    >
+                      {item.name}
+
+                      {arr.length > 0 && (
+                        <span style={{ marginLeft: "0.5rem" }}>
+                          — Reserved by: {displayNames.join(", ")}
+                        </span>
+                      )}
+
+                      {userHasThisReserved && (
+                        <button
+                          style={{
+                            marginLeft: "0.5rem",
+                            padding: "0.1rem 0.4rem",
+                            fontSize: "0.8rem",
+                            cursor: "pointer"
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            unreserveItem(raid.id, boss.name, item.name);
+                          }}
+                        >
+                          Unreserve
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -773,6 +842,7 @@ function AdminPanel({ raid, reserves, allRaids, playerNames }) {
     </div>
   );
 }
+
 function ConfirmModal({ isOpen, onCancel, onConfirm, message }) {
   if (!isOpen) return null;
 
